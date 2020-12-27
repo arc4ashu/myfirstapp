@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2748b323-88f4-4ab9-ba51-c0065d81fc5c" >
-		<http:listener-connection host="0.0.0.0" port="9999" />
+		<http:listener-connection host="${http.host}" port="${http.port}" />
 	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="1884c9ca-51eb-4a0a-a59a-69313f4501f6" file="application-${env}.properties" />
 	<flow name="myfirstappFlow" doc:id="7aadf92c-1ebc-4ab7-b07c-1bb4b5d71bea" >
 		<http:listener doc:name="Listener" doc:id="07e97b0a-3f0c-48a6-a5ff-75b4c0af9b4f" config-ref="HTTP_Listener_config" path="/hello"/>
 		<logger level="INFO" doc:name="Logger" doc:id="256a9251-fde8-40fb-817e-198687203e9c" message="Hello World"/>
+		<ee:transform doc:name="Transform Message" doc:id="24614e2e-ced3-42f4-8c91-d77fea4fe4d1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	messgae:"Hello Application"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</flow>
 </mule>
